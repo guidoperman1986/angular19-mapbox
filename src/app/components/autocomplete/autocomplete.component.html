@@ -1,0 +1,13 @@
+<!-- filepath: /Users/guidoperman/Desktop/Development/Angular/angular-maps-ip-weather/src/app/components/autocomplete/autocomplete.component.html -->
+<mat-form-field appearance="outline">
+    <input matInput map-input type="text" matInput placeholder="Search for some place..." [matAutocomplete]="auto"
+        #query>
+    <mat-autocomplete #auto="matAutocomplete">
+        @for (suggestion of suggestions(); track $index) {
+        <mat-option [value]="suggestion.place_name" (onSelectionChange)="onSelectionChange(suggestion.id)">
+            {{ suggestion.place_name }}
+        </mat-option>
+
+        }
+    </mat-autocomplete>
+</mat-form-field>

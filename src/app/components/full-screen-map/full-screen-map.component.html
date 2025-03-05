@@ -1,0 +1,12 @@
+<!-- @let data = mapData.value();
+
+{{ data | json }} -->
+<app-autocomplete 
+    class="input" 
+    [suggestions]="suggestions()"
+    (searchValue)="onSearchValue($event)"
+    (selectedSuggestion)="onSelectedSuggestion($event)"
+></app-autocomplete>
+
+
+<div #map></div>
