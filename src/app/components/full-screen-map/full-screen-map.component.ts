@@ -5,12 +5,15 @@ import { MapsService } from '../../services/maps.service';
 import { FullscreenControl, LngLat, Map, Marker, NavigationControl } from 'mapbox-gl';
 import { AutocompleteComponent } from "../autocomplete/autocomplete.component";
 import { Feature, SelectedSugestion } from '../../interfaces/suggestions.interface';
+import { environment } from '../../../environments/environment';
+import mapboxgl from 'mapbox-gl';
 
 interface MarkerAndColor {
   color: string;
   marker: Marker;
 }
 
+mapboxgl.accessToken = environment.mapbox_key;
 @Component({
   selector: 'app-full-screen-map',
   imports: [AutocompleteComponent],
@@ -51,7 +54,6 @@ export class FullScreenMapComponent implements OnInit {
       container: this.divmMap()?.nativeElement, // container ID
       style: 'mapbox://styles/mapbox/streets-v12', // style URL
       zoom: 9, // starting zoom
-      accessToken: 'pk.eyJ1IjoiZ3VpZG9wZXJtYW4iLCJhIjoiY2s0YW13dHRoMDNycjNlcGFuMmhubGJjNSJ9.Z92hBclh4KkowqgEPBmXZg',
       center: [lng, lat] // starting position [lng, lat]
     });
 
@@ -69,19 +71,6 @@ export class FullScreenMapComponent implements OnInit {
           const loc = ipInfo.loc.split(',');
           const [lat, lng] = loc;
 
-          /* const map = new Map({
-            container: this.divmMap()?.nativeElement, // container ID
-            style: 'mapbox://styles/mapbox/streets-v12', // style URL
-            center: [lng, lat], // starting position [lng, lat]
-            zoom: 9, // starting zoom
-            accessToken: 'pk.eyJ1IjoiZ3VpZG9wZXJtYW4iLCJhIjoiY2s0YW13dHRoMDNycjNlcGFuMmhubGJjNSJ9.Z92hBclh4KkowqgEPBmXZg'
-          });
-
-          map.addControl(new FullscreenControl());
-          map.addControl(new NavigationControl());
-
-          this.map = map; */
-
           this.initializeMap(lng, lat);
           this.createMarker();
 
@@ -89,16 +78,6 @@ export class FullScreenMapComponent implements OnInit {
         }));
     }
   })
-
-  //mapSuggestedLocation = rxResource({
-  //  request: () => ({ lat: this.lat(), lng: this.lng() }),
-  //  loader: ({ request }) => {
-  //
-  //    console.log('mapSuggestions', request.lat, request.lng);
-  //    /* this.initializeMap(request.lng, request.lat); */
-  //    return of();
-  //  }
-  //});
 
   onSelectedSuggestion(selectedSuggestion: SelectedSugestion | null) {
     const lat = selectedSuggestion?.center[0]!;
@@ -124,7 +103,6 @@ export class FullScreenMapComponent implements OnInit {
 
     const color = '#xxxxxx'.replace(/x/g, y => (Math.random() * 16 | 0).toString(16));
     const lngLat = this.map!.getCenter();
-    console.log('lngLat', lngLat);
 
     this.addMarker(lngLat, color);
   }
