@@ -9,4 +9,6 @@
 ></app-autocomplete>
 
 
+<app-select class="select" [options]="mapStylesOptions()" (styleSelected)="onStyleSelected($event)"></app-select>
+
 <div #map></div>

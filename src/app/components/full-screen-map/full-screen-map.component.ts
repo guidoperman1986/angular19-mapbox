@@ -7,6 +7,8 @@ import { AutocompleteComponent } from "../autocomplete/autocomplete.component";
 import { Feature, SelectedSugestion } from '../../interfaces/suggestions.interface';
 import { environment } from '../../../environments/environment';
 import mapboxgl from 'mapbox-gl';
+import { SelectComponent } from "../select/select.component";
+import { mapStyles } from '../../utils/map-styles';
 
 interface MarkerAndColor {
   color: string;
@@ -16,7 +18,7 @@ interface MarkerAndColor {
 mapboxgl.accessToken = environment.mapbox_key;
 @Component({
   selector: 'app-full-screen-map',
-  imports: [AutocompleteComponent],
+  imports: [AutocompleteComponent, SelectComponent],
   templateUrl: './full-screen-map.component.html',
   styleUrl: './full-screen-map.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -26,12 +28,12 @@ export class FullScreenMapComponent implements OnInit {
   suggestions = signal<Feature[]>([]);
   inputQuery = viewChild.required<ElementRef>('query');
   inputQuerySignal = signal<string>('');
+  mapStylesOptions = signal<{ value: string }[]>(mapStyles.map((style) => ({ value: style })));
+  selectedStyle = signal<string>(this.mapStylesOptions()[0].value);
 
   divmMap = viewChild('map', { read: ElementRef });
   public map?: Map;
   public markers: MarkerAndColor[] = [];
-  lat = signal<number>(0);
-  lng = signal<number>(0);
 
   suggestionsData = rxResource({
     request: () => this.inputQuerySignal(),
@@ -50,10 +52,12 @@ export class FullScreenMapComponent implements OnInit {
 
   // Initialize the map
   initializeMap(lng: number, lat: number) {
+
+    console.log(this.selectedStyle());
     this.map = new Map({
       container: this.divmMap()?.nativeElement, // container ID
-      style: 'mapbox://styles/mapbox/streets-v12', // style URL
-      zoom: 9, // starting zoom
+      style: `mapbox://styles/mapbox/${this.selectedStyle()}`, // style URL
+      zoom: 5, // starting zoom
       center: [lng, lat] // starting position [lng, lat]
     });
 
@@ -118,5 +122,12 @@ export class FullScreenMapComponent implements OnInit {
       .addTo(this.map);
 
     this.markers.push({ color, marker, });
+  }
+
+  onStyleSelected(style: string) {
+    if (!this.map) return;
+
+    this.selectedStyle.set(style);
+    this.map.setStyle('mapbox://styles/mapbox/' + this.selectedStyle());
   }
 }

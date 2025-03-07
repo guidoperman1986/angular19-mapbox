@@ -1,0 +1,8 @@
+<mat-form-field>
+    <mat-label>Map Style</mat-label>
+    <mat-select (selectionChange)="onMapStyleChange($event)">
+        @for (option of options(); track option.value) {
+            <mat-option [value]="option.value">{{option.value}}</mat-option> 
+        }
+    </mat-select>
+</mat-form-field>
