@@ -1,13 +1,12 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
 # Compiled output
-/environments
 /dist
 /tmp
 /out-tsc
 /bazel-out
 .env
-src/environments
+/src/environments/environment
 
 # Node
 /node_modules
